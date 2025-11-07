@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.ui.screens
+package uk.ac.tees.mad.memorylog.ui.screens.splash
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Image

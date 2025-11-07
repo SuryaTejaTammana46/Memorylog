@@ -4,12 +4,15 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import uk.ac.tees.mad.memorylog.ui.screens.SplashScreen
+import uk.ac.tees.mad.memorylog.ui.screens.auth.LoginScreen
+import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
+import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
-    object Auth : Screen("auth")
+    object Login : Screen("login")
+    object Signup : Screen("signup")
     object Calendar : Screen("calendar")
 }
 
@@ -18,13 +21,35 @@ fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
             SplashScreen(onNavigateNext = {
-                navController.navigate(Screen.Auth.route) {
+                navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Splash.route) { inclusive = true }
                 }
             })
         }
-        composable(Screen.Auth.route) {
-            // TODO: AuthScreen() to be implemented next
+
+        composable(Screen.Login.route) {
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Screen.Calendar.route) {
+                        popUpTo(Screen.Login.route) { inclusive = true }
+                    }
+                },
+                onNavigateToSignup = {
+                    navController.navigate(Screen.Signup.route)
+                }
+            )
+        }
+        composable(Screen.Signup.route) {
+            SignupScreen(
+                onSignupSuccess = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Signup.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.navigateUp()
+                }
+            )
         }
         composable(Screen.Calendar.route) {
             // TODO: CalendarViewScreen()

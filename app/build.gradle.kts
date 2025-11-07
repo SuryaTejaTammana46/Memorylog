@@ -7,12 +7,12 @@ plugins {
 
 android {
     namespace = "uk.ac.tees.mad.memorylog"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "uk.ac.tees.mad.memorylog"
         minSdk = 24
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
@@ -86,7 +86,7 @@ dependencies {
     implementation("androidx.work:work-runtime-ktx:2.11.0")
 
     // Coil (image loading)
-    implementation("io.coil-kt:coil-compose:3.3.0")
+//    implementation("io.coil-kt:coil-compose:3.3.0")
 
     // Retrofit + OkHttp
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
