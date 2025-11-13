@@ -25,7 +25,7 @@ fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
             SplashScreen(onNavigateNext = {
-                navController.navigate(Screen.Calendar.route) {
+                navController.navigate(Screen.Login.route) {
                     popUpTo(Screen.Splash.route) { inclusive = true }
                 }
             })
@@ -46,7 +46,7 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Screen.Signup.route) {
             SignupScreen(
                 onSignupSuccess = {
-                    navController.navigate(Screen.Login.route) {
+                    navController.navigate(Screen.Calendar.route) {
                         popUpTo(Screen.Signup.route) { inclusive = true }
                     }
                 },
@@ -57,7 +57,7 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable(Screen.Calendar.route) {
             CalendarScreen(onDayClick = { selectedDate ->
-                // TODO: navigate to detail later
+                // TODO:navigate to detail
             })
         }
     }

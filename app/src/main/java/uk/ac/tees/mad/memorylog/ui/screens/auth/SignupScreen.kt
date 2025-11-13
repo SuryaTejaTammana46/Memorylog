@@ -20,27 +20,26 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.ac.tees.mad.memorylog.ui.screens.auth.components.AppTextField
 import uk.ac.tees.mad.memorylog.viewmodel.AuthViewModel
 
 @Composable
 fun SignupScreen(
-    viewModel: AuthViewModel = viewModel(),
+    viewModel: AuthViewModel = hiltViewModel(),
     onSignupSuccess: () -> Unit,
     onNavigateToLogin: () -> Unit
 ) {
-    val uiState = viewModel.uiState
+    val uiState by viewModel.uiState.collectAsState()
     val scrollableState = rememberScrollState()
 
     LaunchedEffect(uiState.success) {
@@ -82,6 +81,14 @@ fun SignupScreen(
                 value = uiState.password,
                 onValueChange = viewModel::onPasswordChanged,
                 placeholder = "Password",
+                modifier = Modifier.fillMaxWidth(),
+                keyboardType = KeyboardType.Password
+            )
+            Spacer(Modifier.height(8.dp))
+            AppTextField(
+                value = uiState.confirmPassword,
+                onValueChange = viewModel::onConfirmPasswordChanged,
+                placeholder = "Confirm Password",
                 modifier = Modifier.fillMaxWidth(),
                 keyboardType = KeyboardType.Password
             )
