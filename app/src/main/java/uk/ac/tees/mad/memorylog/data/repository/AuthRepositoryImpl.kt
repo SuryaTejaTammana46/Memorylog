@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.memorylog.data.repository
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
 import uk.ac.tees.mad.memorylog.domain.model.User
@@ -11,9 +12,11 @@ class AuthRepositoryImpl @Inject constructor(
 ) : AuthRepository {
 
     override suspend fun login(email: String, password: String): Result<User> = try {
+        Log.d("AuthRepo", "Attempting login for $email")
         val result = firebaseAuth.signInWithEmailAndPassword(email, password).await()
         val user = result.user
         if (user != null) {
+            Log.d("AuthRepo", "Firebase current user: ${firebaseAuth.currentUser?.email}")
             Result.success(User(email = user.email ?: ""))
         } else {
             Result.failure(Exception("Login failed"))

@@ -37,6 +37,6 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMemoryRepository(firestore: FirebaseFirestore): MemoryRepository =
-        MemoryRepositoryImpl(firestore)
+    fun provideMemoryRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth): MemoryRepository =
+        MemoryRepositoryImpl(firestore, firebaseAuth)
 }
