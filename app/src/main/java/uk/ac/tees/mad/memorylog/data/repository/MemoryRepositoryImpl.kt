@@ -12,58 +12,62 @@ class MemoryRepositoryImpl @Inject constructor(
     private val auth: FirebaseAuth
 ) : MemoryRepository {
 
-    private fun userMemoryCollection() = auth.currentUser?.let { user ->
+    private fun userMemoriesCollection() =
         firestore.collection("users")
-            .document(user.uid)
+            .document(auth.currentUser?.uid ?: "unknown_user")
             .collection("memories")
-    } ?: throw IllegalStateException("User not logged in")
 
     override suspend fun addMemory(memory: Memory): Result<Unit> = try {
-        val collection = userMemoryCollection()
-        val docRef = if (memory.id.isBlank()) collection.document() else collection.document(memory.id)
-        val memoryWithId = memory.copy(id = docRef.id)
-        docRef.set(memoryWithId).await()
+        val collection = userMemoriesCollection()
+        val docId = memory.id.ifBlank { collection.document().id }
+        collection.document(docId).set(memory.copy(id = docId)).await()
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun getAllMemories(): Result<List<Memory>> = try {
-        val collection = userMemoryCollection()
-        val snapshot = collection.get().await()
-        val memories = snapshot.toObjects(Memory::class.java)
-        Result.success(memories)
+        val snapshot = userMemoriesCollection().get().await()
+        Result.success(snapshot.toObjects(Memory::class.java))
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun getMemoriesByDate(date: String): Result<List<Memory>> = try {
-        val collection = userMemoryCollection()
-        val snapshot = collection.whereEqualTo("date", date).get().await()
-        val memories = snapshot.toObjects(Memory::class.java)
-        Result.success(memories)
+        val snapshot = userMemoriesCollection()
+            .whereEqualTo("date", date)
+            .get()
+            .await()
+        Result.success(snapshot.toObjects(Memory::class.java))
     } catch (e: Exception) {
         Result.failure(e)
     }
 
     override suspend fun deleteMemory(id: String): Result<Unit> = try {
-        val collection = userMemoryCollection()
-        collection.document(id).delete().await()
+        userMemoriesCollection().document(id).delete().await()
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }
 
-    override suspend fun memoryExistsForDate(date: String): Boolean {
-        val snapshot = userMemoryCollection().whereEqualTo("date", date).get().await()
-        return !snapshot.isEmpty
+    override suspend fun memoryExistsForDate(date: String): Result<Boolean> = try {
+        val snapshot = userMemoriesCollection()
+            .whereEqualTo("date", date)
+            .limit(1)
+            .get()
+            .await()
+        Result.success(!snapshot.isEmpty)
+    } catch (e: Exception) {
+        Result.failure(e)
     }
 
     override suspend fun deleteMemoryByDate(date: String): Result<Unit> = try {
-        val collection = userMemoryCollection()
-        val snapshot = collection.whereEqualTo("date", date).get().await()
-        if (!snapshot.isEmpty) {
-            collection.document(snapshot.documents.first().id).delete().await()
+        val snapshot = userMemoriesCollection()
+            .whereEqualTo("date", date)
+            .get()
+            .await()
+        for (doc in snapshot.documents) {
+            doc.reference.delete().await()
         }
         Result.success(Unit)
     } catch (e: Exception) {

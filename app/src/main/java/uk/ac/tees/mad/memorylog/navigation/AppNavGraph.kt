@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import uk.ac.tees.mad.memorylog.ui.screens.auth.LoginScreen
 import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
 import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
+import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 
 
@@ -16,6 +17,7 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Signup : Screen("signup")
+    object AddMemory : Screen("add_memory")
     object Calendar : Screen("calendar")
 }
 
@@ -56,9 +58,17 @@ fun AppNavGraph(navController: NavHostController) {
             )
         }
         composable(Screen.Calendar.route) {
-            CalendarScreen(onDayClick = { selectedDate ->
+            CalendarScreen(onAddMemoryClick = { navController.navigate(Screen.AddMemory.route) },
+                onDayClick = { selectedDate ->
                 // TODO:navigate to detail
             })
+        }
+        composable(Screen.AddMemory.route) {
+            AddMemoryScreen(
+                onMemoryAdded = {
+                    navController.popBackStack() // return to Calendar after save
+                }
+            )
         }
     }
 }

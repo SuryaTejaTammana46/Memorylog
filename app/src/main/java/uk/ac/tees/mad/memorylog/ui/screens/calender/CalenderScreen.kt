@@ -5,13 +5,16 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,7 +32,8 @@ import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 @Composable
 fun CalendarScreen(
     viewModel: CalendarViewModel = viewModel(),
-    onDayClick: (String) -> Unit = {}
+    onDayClick: (String) -> Unit = {},
+    onAddMemoryClick: () -> Unit = {}
 ) {
     val memoryDays by viewModel.memoryDays.collectAsState()
 
@@ -38,11 +42,14 @@ fun CalendarScreen(
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Text(
-            text = "Your Memories",
-            style = MaterialTheme.typography.headlineSmall,
-            modifier = Modifier.align(Alignment.CenterHorizontally)
-        )
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Your Memories", style = MaterialTheme.typography.headlineSmall)
+            Button(onClick = onAddMemoryClick) { Text("Add Memory") }
+        }
 
         Spacer(modifier = Modifier.height(16.dp))
 

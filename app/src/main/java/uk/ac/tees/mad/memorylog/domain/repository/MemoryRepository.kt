@@ -7,6 +7,6 @@ interface MemoryRepository {
     suspend fun getAllMemories(): Result<List<Memory>>
     suspend fun getMemoriesByDate(date: String): Result<List<Memory>>
     suspend fun deleteMemory(id: String): Result<Unit>
-    suspend fun memoryExistsForDate(date: String): Boolean
+    suspend fun memoryExistsForDate(date: String): Result<Boolean>
     suspend fun deleteMemoryByDate(date: String): Result<Unit>
 }
