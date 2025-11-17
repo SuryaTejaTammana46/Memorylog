@@ -11,6 +11,7 @@ import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
 import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
+import uk.ac.tees.mad.memorylog.ui.screens.TestLocalDbScreen
 
 
 sealed class Screen(val route: String) {
@@ -19,6 +20,7 @@ sealed class Screen(val route: String) {
     object Signup : Screen("signup")
     object AddMemory : Screen("add_memory")
     object Calendar : Screen("calendar")
+    object TestLocalDb : Screen("testLocalDb")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -69,6 +71,9 @@ fun AppNavGraph(navController: NavHostController) {
                     navController.popBackStack() // return to Calendar after save
                 }
             )
+        }
+        composable(Screen.TestLocalDb.route) {
+            TestLocalDbScreen()
         }
     }
 }
