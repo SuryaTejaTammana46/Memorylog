@@ -15,7 +15,6 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -23,7 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import uk.ac.tees.mad.memorylog.ui.screens.calender.components.CalendarDayItem
 import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 
@@ -31,9 +30,9 @@ import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CalendarScreen(
-    viewModel: CalendarViewModel = viewModel(),
+    viewModel: CalendarViewModel = hiltViewModel(),
     onDayClick: (String) -> Unit = {},
-    onAddMemoryClick: () -> Unit = {}
+    onAddMemoryClick: (String) -> Unit = {}
 ) {
     val memoryDays by viewModel.memoryDays.collectAsState()
 
@@ -47,8 +46,12 @@ fun CalendarScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Your Memories", style = MaterialTheme.typography.headlineSmall)
-            Button(onClick = onAddMemoryClick) { Text("Add Memory") }
+            Button(
+                onClick = { onAddMemoryClick(java.time.LocalDate.now().toString()) }
+            ) {
+                Text("Add Memory")
+            }
+
         }
 
         Spacer(modifier = Modifier.height(16.dp))

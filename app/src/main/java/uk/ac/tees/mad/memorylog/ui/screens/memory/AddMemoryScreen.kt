@@ -17,8 +17,10 @@ import java.time.LocalDate
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddMemoryScreen(
+    date: String,
     viewModel: MemoryViewModel = hiltViewModel(),
-    onMemoryAdded: () -> Unit
+    onMemoryAdded: () -> Unit,
+    photoPath: String
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }

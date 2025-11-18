@@ -12,15 +12,24 @@ import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 import uk.ac.tees.mad.memorylog.ui.screens.TestLocalDbScreen
+import uk.ac.tees.mad.memorylog.ui.screens.capture.CaptureScreen
+import java.time.LocalDate
 
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Signup : Screen("signup")
-    object AddMemory : Screen("add_memory")
+    object AddMemory : Screen("add_memory/{date}?photoPath={photoPath}") {
+        fun route(date: String, photoPath: String) = "add_memory/$date?photoPath=$photoPath"
+    }
     object Calendar : Screen("calendar")
     object TestLocalDb : Screen("testLocalDb")
+    object Capture : Screen("capture/{date}") {
+        fun route(date: String) = "capture/$date"
+    }
+
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -29,7 +38,7 @@ fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
             SplashScreen(onNavigateNext = {
-                navController.navigate(Screen.Login.route) {
+                navController.navigate(Screen.Capture.route) {
                     popUpTo(Screen.Splash.route) { inclusive = true }
                 }
             })
@@ -60,20 +69,38 @@ fun AppNavGraph(navController: NavHostController) {
             )
         }
         composable(Screen.Calendar.route) {
-            CalendarScreen(onAddMemoryClick = { navController.navigate(Screen.AddMemory.route) },
+            CalendarScreen(
                 onDayClick = { selectedDate ->
-                // TODO:navigate to detail
-            })
-        }
-        composable(Screen.AddMemory.route) {
-            AddMemoryScreen(
-                onMemoryAdded = {
-                    navController.popBackStack() // return to Calendar after save
+                    // later: open memory detail if exists
+                },
+                onAddMemoryClick = { selectedDate ->
+                    navController.navigate(Screen.Capture.route(selectedDate))
                 }
+            )
+        }
+        composable("add_memory/{date}") { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
+            val photoPath = backStackEntry.arguments?.getString("photoPath") ?: ""
+
+            AddMemoryScreen(
+                date = date,
+                onMemoryAdded = { navController.popBackStack() },
+                photoPath = photoPath
             )
         }
         composable(Screen.TestLocalDb.route) {
             TestLocalDbScreen()
         }
+        composable("capture/{date}") { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
+
+            CaptureScreen(onPhotoSaved = { photoPath ->
+                navController.navigate(Screen.AddMemory.route(date, photoPath)) {
+                    popUpTo(Screen.Capture.route(date)) { inclusive = true }
+                }
+            })
+        }
+
+
     }
 }
