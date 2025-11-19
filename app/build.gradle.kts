@@ -113,4 +113,9 @@ dependencies {
     ksp("com.google.dagger:hilt-android-compiler:2.57.1")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 
+    //Coil
+    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil:2.4.0")
+
+
 }

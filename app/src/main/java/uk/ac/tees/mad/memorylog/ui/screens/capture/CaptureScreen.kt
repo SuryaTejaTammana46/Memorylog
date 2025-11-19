@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.camera.core.AspectRatio
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
 import androidx.camera.core.Preview
@@ -135,6 +136,7 @@ fun takePhoto(
             }
 
             override fun onImageSaved(outputFileResults: ImageCapture.OutputFileResults) {
+                Log.d("PhotoPath", "Saved at: ${photoFile.absolutePath}")
                 onSaved(photoFile.absolutePath)
             }
         })
@@ -153,7 +155,12 @@ private fun CameraPreviewAndCaptureUI(
     var lensFacing by remember { mutableStateOf(androidx.camera.core.CameraSelector.DEFAULT_BACK_CAMERA) }
     var flashMode by remember { mutableStateOf(ImageCapture.FLASH_MODE_OFF) }
 
-    val imageCapture = remember { ImageCapture.Builder().setFlashMode(flashMode).build() }
+    val imageCapture = remember { ImageCapture.Builder()
+        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+        .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+        .setFlashMode(flashMode)
+        .build()
+    }
 
     // Check permission state
     val hasCameraPermission = remember {

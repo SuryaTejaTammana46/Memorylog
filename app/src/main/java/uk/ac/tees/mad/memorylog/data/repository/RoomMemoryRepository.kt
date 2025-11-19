@@ -24,6 +24,6 @@ class RoomMemoryRepository @Inject constructor(
         dao.deleteMemory(memory.toEntity())
 }
 
-private fun MemoryEntity.toDomain() = Memory(id, title, description, date, imagePath)
+private fun MemoryEntity.toDomain() = Memory(title, description, date, imagePath)
 
-private fun Memory.toEntity() = MemoryEntity(date, id, title, description, imagePath)
+private fun Memory.toEntity() = MemoryEntity(date, imagePath, title, description, System.currentTimeMillis())

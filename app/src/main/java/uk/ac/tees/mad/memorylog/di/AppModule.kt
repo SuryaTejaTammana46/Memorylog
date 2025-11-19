@@ -8,6 +8,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import jakarta.inject.Singleton
+import uk.ac.tees.mad.memorylog.data.local.dao.MemoryDao
 import uk.ac.tees.mad.memorylog.data.repository.AuthRepositoryImpl
 import uk.ac.tees.mad.memorylog.data.repository.MemoryRepositoryImpl
 import uk.ac.tees.mad.memorylog.domain.repository.AuthRepository
@@ -37,6 +38,6 @@ class RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideMemoryRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth): MemoryRepository =
-        MemoryRepositoryImpl(firestore, firebaseAuth)
+    fun provideMemoryRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth, dao: MemoryDao): MemoryRepository =
+        MemoryRepositoryImpl(firestore, firebaseAuth, dao)
 }

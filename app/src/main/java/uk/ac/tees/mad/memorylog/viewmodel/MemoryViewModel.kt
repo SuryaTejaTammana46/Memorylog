@@ -56,4 +56,14 @@ class MemoryViewModel @Inject constructor(
             }
         }
     }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    fun hasMemoryToday(onResult: (Boolean) -> Unit) {
+        viewModelScope.launch {
+            val today = LocalDate.now().toString()
+            val exists = repository.hasMemoryFor(today)
+            onResult(exists)
+        }
+    }
+
 }

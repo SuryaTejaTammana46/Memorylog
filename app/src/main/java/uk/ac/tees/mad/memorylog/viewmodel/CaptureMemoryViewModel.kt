@@ -28,10 +28,10 @@ class CaptureMemoryViewModel @Inject constructor(
             _uiState.value = UiState.Loading
             val date = LocalDate.now().toString()
             val memory = Memory(
-                id = "",
                 title = title,
                 description = imageUri,
-                date = date
+                date = date,
+//                im = photoPath
             )
 
             val result = memoryRepository.addMemory(memory)

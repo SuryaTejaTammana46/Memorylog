@@ -22,4 +22,12 @@ interface MemoryDao {
 
     @Delete
     suspend fun deleteMemory(memory: MemoryEntity)
+
+    @Query("SELECT * FROM memories WHERE date = :date LIMIT 1")
+    suspend fun getMemoryByDate(date: String): MemoryEntity?
+
+    @Query("DELETE FROM memories WHERE date = :date")
+    suspend fun deleteByDate(date: String)
+
+
 }
