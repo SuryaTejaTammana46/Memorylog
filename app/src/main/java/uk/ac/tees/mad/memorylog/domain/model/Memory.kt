@@ -6,4 +6,5 @@ data class Memory(
     val description: String = "",
     val date: String = "", // ISO string for now
     val imagePath: String = "", // Local storage path (CameraX)
+    val imageUrl: String = ""  // CLOUD URL (Firebase)
 )

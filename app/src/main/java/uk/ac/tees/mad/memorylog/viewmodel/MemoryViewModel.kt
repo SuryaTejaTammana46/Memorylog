@@ -25,8 +25,10 @@ class MemoryViewModel @Inject constructor(
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun addMemoryWithCheck(memory: Memory, onReplaceRequest: () -> Unit) {
+        _uiState.value= UiState.Success(Unit)
         viewModelScope.launch {
             _uiState.value = UiState.Loading
+
             val today = LocalDate.now().toString()
 
             val existsResult = repository.memoryExistsForDate(today)

@@ -1,5 +1,6 @@
 package uk.ac.tees.mad.memorylog.navigation
 
+import CaptureScreen
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -9,8 +10,8 @@ import androidx.navigation.compose.composable
 import uk.ac.tees.mad.memorylog.ui.screens.auth.LoginScreen
 import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
 import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
-import uk.ac.tees.mad.memorylog.ui.screens.capture.CaptureScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
+import uk.ac.tees.mad.memorylog.ui.screens.memory.PreviewMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 import java.time.LocalDate
 
@@ -24,6 +25,7 @@ sealed class Screen(val route: String) {
     }
 
     object Calendar : Screen("calendar")
+
     //    object TestLocalDb : Screen("testLocalDb")
     object Capture : Screen("capture/{date}") {
         fun route(date: String) = "capture/$date"
@@ -97,6 +99,14 @@ fun AppNavGraph(navController: NavHostController) {
             CaptureScreen(onPhotoSaved = { path ->
                 navController.navigate(Screen.AddMemory.route(date, path))
             })
+        }
+        composable("preview_memory?path={path}") { backStackEntry ->
+            val path = backStackEntry.arguments?.getString("path") ?: ""
+            PreviewMemoryScreen(
+                photoPath = path,
+                onRetake = { navController.popBackStack() },
+                onConfirm = { navController.navigate("add_memory?date=${LocalDate.now()}&photoPath=$path") }
+            )
         }
 
 

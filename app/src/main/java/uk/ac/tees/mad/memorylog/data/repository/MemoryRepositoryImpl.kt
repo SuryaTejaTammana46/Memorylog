@@ -2,10 +2,10 @@ package uk.ac.tees.mad.memorylog.data.repository
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.tasks.await
 import uk.ac.tees.mad.memorylog.data.local.dao.MemoryDao
 import uk.ac.tees.mad.memorylog.data.local.entity.toDomain
-import uk.ac.tees.mad.memorylog.data.local.entity.toEntity
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.domain.repository.MemoryRepository
 import javax.inject.Inject
@@ -14,22 +14,49 @@ class MemoryRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val dao: MemoryDao,
-    ) : MemoryRepository {
+) : MemoryRepository {
 
     private fun userMemoriesCollection() =
         firestore.collection("users")
             .document(auth.currentUser?.uid ?: "unknown_user")
             .collection("memories")
 
+//    override suspend fun addMemory(memory: Memory): Result<Unit> = try {
+//        dao.insertMemory(memory.toEntity())
+//        val collection = userMemoriesCollection()
+//        val docId = memory.id.ifBlank { collection.document().id }
+//        collection.document(docId).set(memory.copy(id = docId)).await()
+//        Result.success(Unit)
+//    } catch (e: Exception) {
+//        Result.failure(e)
+//    }
+
     override suspend fun addMemory(memory: Memory): Result<Unit> = try {
-        dao.insertMemory(memory.toEntity())
-        val collection = userMemoriesCollection()
-        val docId = memory.id.ifBlank { collection.document().id }
-        collection.document(docId).set(memory.copy(id = docId)).await()
+        val uid = auth.currentUser?.uid ?: return Result.failure(Exception("Not logged in"))
+        val storageRef = FirebaseStorage.getInstance()
+            .reference
+            .child("users/$uid/memories/${memory.date}.jpg")
+
+        // Upload image to Firebase Storage
+        val uploadTask = storageRef.putFile(android.net.Uri.parse(memory.imagePath)).await()
+
+        // Get download URL
+        val downloadUrl = storageRef.downloadUrl.await().toString()
+
+        // Save metadata to Firestore
+        val finalMemory = memory.copy(
+            imagePath = downloadUrl,
+            id = memory.date
+        )
+        //        val memoryWithUrl = memory.copy(imageUrl = downloadUrl)
+        //        val docId = memoryWithUrl.id.ifBlank { userMemoriesCollection().document().id }
+
+        userMemoriesCollection().document(finalMemory.id).set(finalMemory).await()
         Result.success(Unit)
     } catch (e: Exception) {
         Result.failure(e)
     }
+
 
     override suspend fun getAllMemories(): Result<List<Memory>> = try {
         val snapshot = userMemoriesCollection().get().await()
@@ -86,7 +113,8 @@ class MemoryRepositoryImpl @Inject constructor(
             .limit(1)
             .get()
             .await()
-        return !snapshot.isEmpty    }
+        return !snapshot.isEmpty
+    }
 
     override suspend fun getMemoryForDate(date: String): Memory? {
         return dao.getMemoryByDate(date)?.toDomain()
