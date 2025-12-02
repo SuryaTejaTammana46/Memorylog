@@ -20,6 +20,9 @@ interface MemoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMemory(memory: MemoryEntity)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertAll(memories: List<MemoryEntity>)
+
     @Delete
     suspend fun deleteMemory(memory: MemoryEntity)
 
