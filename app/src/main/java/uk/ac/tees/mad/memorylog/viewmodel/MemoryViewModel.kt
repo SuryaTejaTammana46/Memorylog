@@ -18,7 +18,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 @HiltViewModel
-class MemoryViewModel @Inject constructor(
+open class MemoryViewModel @Inject constructor(
     private val repository: MemoryRepository
 ) : ViewModel() {
 

@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import uk.ac.tees.mad.memorylog.R
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -77,9 +79,11 @@ fun GalleryMemoryCard(memory: Memory, onClick: () -> Unit) {
     ) {
         AsyncImage(
             model = memory.imagePath,
-            contentDescription = null,
+            contentDescription = memory.title,
             modifier = Modifier.size(90.dp).clip(RoundedCornerShape(12.dp)),
-            contentScale = ContentScale.Crop
+            contentScale = ContentScale.Crop,
+            placeholder = painterResource(id = R.drawable.ic_image_placeholder),
+            error = painterResource(id = R.drawable.ic_broken_image)
         )
         Spacer(Modifier.width(12.dp))
         Column {

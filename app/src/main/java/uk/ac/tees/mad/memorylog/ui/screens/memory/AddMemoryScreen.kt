@@ -71,7 +71,8 @@ fun AddMemoryScreen(
     date: String,
     viewModel: MemoryViewModel = hiltViewModel(),
     onMemoryAdded: () -> Unit,
-    photoPath: String
+    photoPath: String,
+    onNavigateBack: () -> Unit
 ) {
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
@@ -82,6 +83,7 @@ fun AddMemoryScreen(
     LaunchedEffect(uiState) {
         if (uiState is UiState.Success) {
             onMemoryAdded()
+            onNavigateBack()
         }
     }
 
@@ -176,8 +178,8 @@ fun AddMemoryScreen(
                     onReplaceRequest = { showReplaceDialog = true }
                 )
             },
-//            enabled = uiState !is UiState.Loading,
-//            modifier = Modifier.fillMaxWidth()
+            enabled = uiState !is UiState.Loading,
+            modifier = Modifier.fillMaxWidth()
         ) {
             Text(if (uiState is UiState.Loading) "Saving..." else "Save Memory")
         }

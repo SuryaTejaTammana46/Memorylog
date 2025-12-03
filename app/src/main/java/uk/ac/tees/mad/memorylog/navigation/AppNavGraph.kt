@@ -25,11 +25,14 @@ sealed class Screen(val route: String) {
     object AddMemory : Screen("add_memory/{date}?photoPath={photoPath}") {
         fun route(date: String, photoPath: String) = "add_memory/$date?photoPath=$photoPath"
     }
+
     object Calendar : Screen("calendar")
+
     //    object TestLocalDb : Screen("testLocalDb")
     object Capture : Screen("capture/{date}") {
         fun route(date: String) = "capture/$date"
     }
+
     object Gallery : Screen("gallery")
     object MemoryDetail : Screen("memory_detail/{id}") {
         fun route(id: String) = "memory_detail/$id"
@@ -82,30 +85,34 @@ fun AppNavGraph(navController: NavHostController) {
                 }
             )
         }
-        composable("addMemory/{date}") { navBackStackEntry ->
-            val date = navBackStackEntry.arguments?.getString("date") ?: ""
-            val photoPath = navBackStackEntry.arguments?.getString("photoPath") ?: ""
+        composable(Screen.AddMemory.route) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: ""
+            val photoPath = backStackEntry.arguments?.getString("photoPath") ?: ""
 
             AddMemoryScreen(
                 date = date,
                 photoPath = photoPath,
                 onMemoryAdded = {
-                    navController.navigate("gallery") {
-                        popUpTo("addMemory/{date}/{photoPath}") { inclusive = true }
+                    navController.navigate(Screen.Calendar.route) {
+                        popUpTo(Screen.AddMemory.route) { inclusive = true }
                     }
+                },
+                onNavigateBack = { navController.navigate(Screen.Calendar.route) }
+            )
+        }
+
+        composable(Screen.Capture.route) { backStackEntry ->
+            val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
+            CaptureScreen(
+                onPhotoSaved = { path ->
+                    navController.navigate(Screen.AddMemory.route(date, path))
                 }
             )
         }
+
 //        composable(Screen.TestLocalDb.route) {
 //            TestLocalDbScreen()
 //        }
-        composable("capture/{date}") { backStackEntry ->
-            val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
-
-            CaptureScreen(onPhotoSaved = { path ->
-                navController.navigate("addMemory/${LocalDate.now()}/$path")
-            })
-        }
         composable("preview_memory?path={path}") { backStackEntry ->
             val path = backStackEntry.arguments?.getString("path") ?: ""
             PreviewMemoryScreen(
