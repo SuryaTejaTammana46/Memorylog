@@ -160,4 +160,12 @@ class MemoryRepositoryImpl @Inject constructor(
         return dao.getMemoryByDate(date)?.toDomain()
     }
 
+    override suspend fun getUnsyncedMemories(): List<Memory> {
+        return dao.getUnsyncedMemories().map { it.toDomain() }
+    }
+
+    override suspend fun markAsSynced(date: String) {
+        return dao.markAsSynced(date)
+    }
+
 }

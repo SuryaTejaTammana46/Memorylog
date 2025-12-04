@@ -10,7 +10,9 @@ data class MemoryEntity(
     val imagePath: String, // local URI (CameraX will insert here later)
     val title: String,
     val description: String,
-    val timestamp: Long
+    val timestamp: Long,
+    val isSynced: Boolean = false
+
 )
 
 fun MemoryEntity.toDomain() = Memory(
@@ -18,7 +20,8 @@ fun MemoryEntity.toDomain() = Memory(
     title = title,
     description = description,
     date = date,
-    imagePath = imagePath
+    imagePath = imagePath,
+    isSynced = isSynced
 )
 
 fun Memory.toEntity() = MemoryEntity(
@@ -26,5 +29,6 @@ fun Memory.toEntity() = MemoryEntity(
     title = title,
     description = description,
     imagePath = imagePath,
-    timestamp = System.currentTimeMillis()
+    timestamp = System.currentTimeMillis(),
+    isSynced = isSynced
 )

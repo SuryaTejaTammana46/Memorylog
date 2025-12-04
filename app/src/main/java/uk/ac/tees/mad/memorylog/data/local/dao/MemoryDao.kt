@@ -32,5 +32,11 @@ interface MemoryDao {
     @Query("DELETE FROM memories WHERE date = :date")
     suspend fun deleteByDate(date: String)
 
+    @Query("SELECT * FROM memories WHERE isSynced = 0")
+    suspend fun getUnsyncedMemories(): List<MemoryEntity>
+
+    @Query("UPDATE memories SET isSynced = 1 WHERE date = :date")
+    suspend fun markAsSynced(date: String)
+
 
 }
