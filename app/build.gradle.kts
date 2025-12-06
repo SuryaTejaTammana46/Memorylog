@@ -54,6 +54,7 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     implementation(libs.androidx.hilt.common)
+    implementation(libs.androidx.datastore.core.android)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -88,9 +89,6 @@ dependencies {
     // WorkManager
     implementation("androidx.work:work-runtime-ktx:2.11.0")
 
-    // Coil (image loading)
-//    implementation("io.coil-kt:coil-compose:3.3.0")
-
     // Retrofit + OkHttp
     implementation("com.squareup.retrofit2:retrofit:2.11.0")
     implementation("com.squareup.retrofit2:converter-gson:2.11.0")
@@ -117,6 +115,11 @@ dependencies {
     //Coil
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("io.coil-kt:coil:2.4.0")
+
+    //Preferences DataStore
+    implementation("androidx.datastore:datastore-preferences-core:1.1.7")
+    implementation("androidx.datastore:datastore-preferences:1.1.1")
+
 
 
 }

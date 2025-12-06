@@ -5,8 +5,10 @@ import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import uk.ac.tees.mad.memorylog.ui.screens.auth.LoginScreen
 import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
 import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
@@ -14,6 +16,7 @@ import uk.ac.tees.mad.memorylog.ui.screens.gallery.GalleryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.gallery.MemoryDetailScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.PreviewMemoryScreen
+import uk.ac.tees.mad.memorylog.ui.screens.settings.SettingsScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 import java.time.LocalDate
 
@@ -37,6 +40,7 @@ sealed class Screen(val route: String) {
     object MemoryDetail : Screen("memory_detail/{id}") {
         fun route(id: String) = "memory_detail/$id"
     }
+    object Settings : Screen("settings")
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -85,7 +89,17 @@ fun AppNavGraph(navController: NavHostController) {
                 }
             )
         }
-        composable(Screen.AddMemory.route) { backStackEntry ->
+        composable(
+            route = "add_memory/{date}?photoPath={photoPath}",
+            arguments = listOf(
+                navArgument("date") { type = NavType.StringType },
+                navArgument("photoPath") {
+                    type = NavType.StringType
+                    defaultValue = ""
+                    nullable = true
+                }
+            )
+        ) { backStackEntry ->
             val date = backStackEntry.arguments?.getString("date") ?: ""
             val photoPath = backStackEntry.arguments?.getString("photoPath") ?: ""
 
@@ -135,6 +149,9 @@ fun AppNavGraph(navController: NavHostController) {
                 memoryId = memoryId,
                 onBack = { navController.popBackStack() }
             )
+        }
+        composable(Screen.Settings.route) {
+            SettingsScreen()
         }
     }
 }
