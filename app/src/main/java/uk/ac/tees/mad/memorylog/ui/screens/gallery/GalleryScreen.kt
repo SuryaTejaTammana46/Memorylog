@@ -27,7 +27,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
@@ -94,72 +93,3 @@ fun GalleryMemoryCard(memory: Memory, onClick: () -> Unit) {
         }
     }
 }
-
-
-@Preview(showBackground = true, name = "MemoryLog – Gallery Screen")
-@Composable
-fun GalleryScreenPreview() {
-    val sampleMemories = listOf(
-        Memory(
-            id = "1",
-            title = "Summer Beach Trip 2024",
-            date = "15 July 2024",
-            description = "Amazing day with friends at Saltburn beach!",
-            imagePath = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800"
-        ),
-        Memory(
-            id = "2",
-            title = "First Day at University",
-            date = "18 September 2023",
-            description = "Excited and nervous — new chapter begins!",
-            imagePath = "https://images.unsplash.com/photo-1523050858588-9cb708a54e9f?w=800"
-        ),
-        Memory(
-            id = "3",
-            title = "Graduation Day",
-            date = "10 July 2024",
-            description = "Finally made it! So proud of this moment.",
-            imagePath = "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800"
-        ),
-        Memory(
-            id = "4",
-            title = "Winter Wonderland",
-            date = "25 December 2023",
-            description = "Christmas morning with family — pure magic.",
-            imagePath = "https://images.unsplash.com/photo-1543589077-57900d2634da?w=800"
-        )
-    )
-
-    Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            OutlinedTextField(
-                value = "beach",
-                onValueChange = {},
-                label = { Text("Search memories...") },
-                modifier = Modifier.weight(1f),
-                shape = RoundedCornerShape(12.dp)
-            )
-            Spacer(Modifier.width(12.dp))
-            Button(onClick = {}) {
-                Text("Newest")
-            }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            items(sampleMemories) { memory ->
-                GalleryMemoryCard(memory = memory, onClick = {})
-            }
-        }
-    }
-}
-
-// Required data class for preview only
-private data class Memory(
-    val id: String,
-    val title: String,
-    val date: String,
-    val description: String,
-    val imagePath: String
-)
