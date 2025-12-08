@@ -25,13 +25,15 @@ sealed class Screen(val route: String) {
     object Splash : Screen("splash")
     object Login : Screen("login")
     object Signup : Screen("signup")
+    object Settings : Screen("settings")
+    object Calendar : Screen("calendar")
+    object Home : Screen("home")
+
+    //    object TestLocalDb : Screen("testLocalDb")
     object AddMemory : Screen("add_memory/{date}?photoPath={photoPath}") {
         fun route(date: String, photoPath: String) = "add_memory/$date?photoPath=$photoPath"
     }
 
-    object Calendar : Screen("calendar")
-
-    //    object TestLocalDb : Screen("testLocalDb")
     object Capture : Screen("capture/{date}") {
         fun route(date: String) = "capture/$date"
     }
@@ -40,7 +42,7 @@ sealed class Screen(val route: String) {
     object MemoryDetail : Screen("memory_detail/{id}") {
         fun route(id: String) = "memory_detail/$id"
     }
-    object Settings : Screen("settings")
+
 }
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -48,17 +50,24 @@ sealed class Screen(val route: String) {
 fun AppNavGraph(navController: NavHostController) {
     NavHost(navController = navController, startDestination = Screen.Splash.route) {
         composable(Screen.Splash.route) {
-            SplashScreen(onNavigateNext = {
-                navController.navigate(Screen.Login.route) {
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+            SplashScreen(
+                onNavigateToHome = {
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                },
+                onNavigateToLogin = {
+                    navController.navigate(Screen.Login.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
                 }
-            })
+            )
         }
 
         composable(Screen.Login.route) {
             LoginScreen(
                 onLoginSuccess = {
-                    navController.navigate(Screen.Calendar.route) {
+                    navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Login.route) { inclusive = true }
                     }
                 },
@@ -70,7 +79,7 @@ fun AppNavGraph(navController: NavHostController) {
         composable(Screen.Signup.route) {
             SignupScreen(
                 onSignupSuccess = {
-                    navController.navigate(Screen.Calendar.route) {
+                    navController.navigate(Screen.Home.route) {
                         popUpTo(Screen.Signup.route) { inclusive = true }
                     }
                 },
@@ -79,16 +88,19 @@ fun AppNavGraph(navController: NavHostController) {
                 }
             )
         }
-        composable(Screen.Calendar.route) {
-            CalendarScreen(
-                onDayClick = { selectedDate ->
-                    // later: open memory detail if exists
-                },
-                onAddMemoryClick = { selectedDate ->
-                    navController.navigate(Screen.Capture.route(selectedDate))
-                }
-            )
+        composable(Screen.Home.route) {
+            HomeScreen(navController)
         }
+//        composable(Screen.Calendar.route) {
+//            CalendarScreen(
+//                onDayClick = { selectedDate ->
+//                    // later: open memory detail if exists
+//                },
+//                onAddMemoryClick = { selectedDate ->
+//                    navController.navigate(Screen.Capture.route(selectedDate))
+//                }
+//            )
+//        }
         composable(
             route = "add_memory/{date}?photoPath={photoPath}",
             arguments = listOf(
@@ -135,13 +147,13 @@ fun AppNavGraph(navController: NavHostController) {
                 onConfirm = { navController.navigate("add_memory?date=${LocalDate.now()}&photoPath=$path") }
             )
         }
-        composable(Screen.Gallery.route) {
-            GalleryScreen(
-                onMemoryClick = { memoryId ->
-                    navController.navigate(Screen.MemoryDetail.route(memoryId))
-                }
-            )
-        }
+//        composable(Screen.Gallery.route) {
+//            GalleryScreen(
+//                onMemoryClick = { memoryId ->
+//                    navController.navigate(Screen.MemoryDetail.route(memoryId))
+//                }
+//            )
+//        }
 
         composable(Screen.MemoryDetail.route) { backStackEntry ->
             val memoryId = backStackEntry.arguments?.getString("id") ?: ""
@@ -150,8 +162,8 @@ fun AppNavGraph(navController: NavHostController) {
                 onBack = { navController.popBackStack() }
             )
         }
-        composable(Screen.Settings.route) {
-            SettingsScreen()
-        }
+//        composable(Screen.Settings.route) {
+//            SettingsScreen()
+//        }
     }
 }

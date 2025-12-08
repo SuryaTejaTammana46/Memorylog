@@ -36,7 +36,10 @@ import uk.ac.tees.mad.memorylog.R
 import uk.ac.tees.mad.memorylog.viewmodel.SplashViewModel
 
 @Composable
-fun SplashScreen(onNavigateNext: () -> Unit) {
+fun SplashScreen(
+    onNavigateToHome: () -> Unit,
+    onNavigateToLogin: () -> Unit
+) {
     val viewModel: SplashViewModel = hiltViewModel()
     val imageUrl by viewModel.dailyImage.collectAsState()
     val quote by viewModel.dailyQuote.collectAsState()
@@ -47,14 +50,14 @@ fun SplashScreen(onNavigateNext: () -> Unit) {
     LaunchedEffect(true) {
         startAnimation = true
         viewModel.fetchDailyInspiration()
-        delay(3000)
+        delay(2000)
 
         // Check Firebase authentication state
         val user = FirebaseAuth.getInstance().currentUser
         if (user != null) {
-            onNavigateNext() // → Calendar or Main
+            onNavigateToHome()
         } else {
-            onNavigateNext() // → Login screen
+            onNavigateToLogin()
         }
     }
 
@@ -70,14 +73,14 @@ fun SplashScreen(onNavigateNext: () -> Unit) {
                 contentDescription = "Daily inspiration",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop,
-                placeholder = painterResource(R.drawable.ic_image_placeholder),
+                placeholder = painterResource(R.drawable.playstore_icon),
                 alpha = 0.2f
             )
         }
 
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Image(
-                painter = painterResource(id = R.drawable.ic_launcher_foreground),
+                painter = painterResource(id = R.drawable.playstore_icon),
                 contentDescription = "App Logo",
                 modifier = Modifier
                     .size(120.dp)

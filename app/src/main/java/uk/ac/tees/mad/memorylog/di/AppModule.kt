@@ -12,6 +12,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import uk.ac.tees.mad.memorylog.data.local.AppDatabase
 import javax.inject.Singleton
 import uk.ac.tees.mad.memorylog.data.local.dao.MemoryDao
 import uk.ac.tees.mad.memorylog.data.repository.AuthRepositoryImpl
@@ -26,7 +27,7 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 
 @Module
 @InstallIn(SingletonComponent::class)
-class AppModule {
+object AppModule {
 
     @Provides
     @Singleton
@@ -64,5 +65,16 @@ class AppModule {
         firebaseAuth: FirebaseAuth,
         dataStore: DataStore<Preferences>
     ): UserRepository = UserRepositoryImpl(firestore, firebaseAuth, dataStore)
+
+    @Provides
+    @Singleton
+    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+        return AppDatabase.getDatabase(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemoryDao(db: AppDatabase): MemoryDao = db.memoryDao()
+
 
 }

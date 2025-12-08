@@ -14,6 +14,25 @@ import uk.ac.tees.mad.memorylog.viewmodel.SettingsViewModel
 fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     val profile = viewModel.userProfile
 
+    if (profile == null) {
+        // Show loading while profile is fetched
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator()
+        }
+        return
+    }
+
+    // Safe values with defaults
+    val name by remember { mutableStateOf(profile.name) }
+    val avatarUrl by remember { mutableStateOf(profile.avatarUrl) }
+    val darkTheme by remember { mutableStateOf(profile.darkTheme) }
+    val autoBackup by remember { mutableStateOf(profile.autoBackup) }
+    val biometricEnabled by remember { mutableStateOf(profile.biometricEnabled) }
+
+
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -22,31 +41,31 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
     ) {
         Text("Profile", style = MaterialTheme.typography.titleLarge)
 
-        profile?.let {
+
             OutlinedTextField(
-                value = it.name,
-                onValueChange = { name -> viewModel.updateProfile(name, it.avatarUrl) },
-                label = { Text("Name") }
+                value = name,
+                onValueChange = { name -> viewModel.updateProfile(name, avatarUrl) },
+                label = { Text("Name") },
+                modifier = Modifier.fillMaxWidth()
             )
 
             AsyncImage(
-                model = it.avatarUrl,
+                model = if (avatarUrl.isNotBlank()) avatarUrl else R.drawable.default_avatar,
                 contentDescription = "Avatar",
                 modifier = Modifier.size(80.dp)
             )
-        }
 
         Divider()
 
-        SettingToggle("Dark Theme", profile?.darkTheme ?: false) {
+        SettingToggle("Dark Theme", darkTheme) {
             viewModel.updateTheme(it)
         }
 
-        SettingToggle("Biometric Unlock", profile?.biometricEnabled ?: false) {
+        SettingToggle("Biometric Unlock", biometricEnabled) {
             viewModel.updateBiometric(it)
         }
 
-        SettingToggle("Auto Backup", profile?.autoBackup ?: true) {
+        SettingToggle("Auto Backup", autoBackup) {
             viewModel.updateAutoBackup(it)
         }
 

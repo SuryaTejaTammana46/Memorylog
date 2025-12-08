@@ -32,7 +32,7 @@ import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 fun CalendarScreen(
     viewModel: CalendarViewModel = hiltViewModel(),
     onDayClick: (String) -> Unit = {},
-    onAddMemoryClick: (String) -> Unit = {}
+    onAddMemoryClick: (String, () -> Unit) -> Unit
 ) {
     val memoryDays by viewModel.memoryDays.collectAsState()
 
@@ -47,7 +47,12 @@ fun CalendarScreen(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Button(
-                onClick = { onAddMemoryClick(java.time.LocalDate.now().toString()) }
+                onClick = {
+                    onAddMemoryClick(
+                        java.time.LocalDate.now().toString(),
+                        { viewModel.refresh() }
+                    )
+                }
             ) {
                 Text("Add Memory")
             }
@@ -58,12 +63,12 @@ fun CalendarScreen(
 
         LazyVerticalGrid(
             columns = GridCells.Fixed(7),
-            contentPadding = PaddingValues(8.dp),
+            contentPadding = PaddingValues(4.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             items(memoryDays) { day ->
-                CalendarDayItem(memoryDay = day) {
+                CalendarDayItem(memoryDay = day, modifier = Modifier.fillMaxWidth()) {
                     onDayClick(it.date.toString())
                 }
             }
