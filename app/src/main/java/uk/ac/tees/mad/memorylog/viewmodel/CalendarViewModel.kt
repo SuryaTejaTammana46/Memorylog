@@ -27,9 +27,7 @@ class CalendarViewModel @Inject constructor(
     private val _memoryDays = MutableStateFlow<List<MemoryDay>>(emptyList())
     val memoryDays: StateFlow<List<MemoryDay>> = _memoryDays
 
-    init {
-        loadCalendarData()
-    }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     fun loadCalendarData() {

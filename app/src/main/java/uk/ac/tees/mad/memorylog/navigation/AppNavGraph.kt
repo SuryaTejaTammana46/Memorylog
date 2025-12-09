@@ -11,12 +11,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import uk.ac.tees.mad.memorylog.ui.screens.auth.LoginScreen
 import uk.ac.tees.mad.memorylog.ui.screens.auth.SignupScreen
-import uk.ac.tees.mad.memorylog.ui.screens.calender.CalendarScreen
-import uk.ac.tees.mad.memorylog.ui.screens.gallery.GalleryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.gallery.MemoryDetailScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.AddMemoryScreen
 import uk.ac.tees.mad.memorylog.ui.screens.memory.PreviewMemoryScreen
-import uk.ac.tees.mad.memorylog.ui.screens.settings.SettingsScreen
 import uk.ac.tees.mad.memorylog.ui.screens.splash.SplashScreen
 import java.time.LocalDate
 
@@ -119,8 +116,8 @@ fun AppNavGraph(navController: NavHostController) {
                 date = date,
                 photoPath = photoPath,
                 onMemoryAdded = {
-                    navController.navigate(Screen.Calendar.route) {
-                        popUpTo(Screen.AddMemory.route) { inclusive = true }
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(Screen.Home.route) { inclusive = true }
                     }
                 },
                 onNavigateBack = { navController.navigate(Screen.Calendar.route) }

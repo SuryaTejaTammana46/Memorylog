@@ -37,6 +37,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.ui.screens.uistate.UiState
+import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
 import java.time.LocalDate
 
@@ -45,6 +46,7 @@ import java.time.LocalDate
 fun AddMemoryScreen(
     date: String,
     viewModel: MemoryViewModel = hiltViewModel(),
+    calendarViewModel: CalendarViewModel=hiltViewModel(),
     onMemoryAdded: () -> Unit,
     photoPath: String,
     onNavigateBack: () -> Unit
@@ -56,11 +58,8 @@ fun AddMemoryScreen(
     val uiState by viewModel.uiState.collectAsState()
 
     LaunchedEffect(uiState) {
-        if (uiState is UiState.Success) {
-            viewModel.resetEvent()
-            onMemoryAdded()
-            onNavigateBack()
-        }
+
+        viewModel.resetEvent()
     }
 
     if (showReplaceDialog) {
@@ -153,6 +152,19 @@ fun AddMemoryScreen(
                     ),
                     onReplaceRequest = { showReplaceDialog = true }
                 )
+                when(uiState){
+                    is UiState.Failure -> {}
+                    UiState.Idle -> {
+
+                    }
+                    UiState.Loading -> {
+
+                    }
+                    is UiState.Success<*> -> {
+                        calendarViewModel.loadCalendarData()
+                        onMemoryAdded()
+                    }
+                }
             },
             enabled = uiState !is UiState.Loading,
             modifier = Modifier.fillMaxWidth()

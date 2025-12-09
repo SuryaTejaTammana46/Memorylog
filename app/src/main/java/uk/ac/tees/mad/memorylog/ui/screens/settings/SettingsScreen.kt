@@ -8,6 +8,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import uk.ac.tees.mad.memorylog.R
+import uk.ac.tees.mad.memorylog.ui.screens.calender.components.ProfileHeader
 import uk.ac.tees.mad.memorylog.viewmodel.SettingsViewModel
 
 @Composable
@@ -39,6 +41,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(24.dp)
     ) {
+        ProfileHeader("Settings")
         Text("Profile", style = MaterialTheme.typography.titleLarge)
 
 
@@ -50,7 +53,7 @@ fun SettingsScreen(viewModel: SettingsViewModel = hiltViewModel()) {
             )
 
             AsyncImage(
-                model = if (avatarUrl.isNotBlank()) avatarUrl else R.drawable.default_avatar,
+                model = if (avatarUrl.isNotBlank()) avatarUrl else R.drawable.img,
                 contentDescription = "Avatar",
                 modifier = Modifier.size(80.dp)
             )

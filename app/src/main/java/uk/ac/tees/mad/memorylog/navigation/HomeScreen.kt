@@ -24,7 +24,7 @@ import uk.ac.tees.mad.memorylog.ui.screens.settings.SettingsScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun HomeScreen(navController: NavHostController) {
+fun HomeScreen(rootNavController: NavHostController) {
     val innerNavController = rememberNavController()
 
     val bottomItems = listOf(
@@ -53,7 +53,7 @@ fun HomeScreen(navController: NavHostController) {
                             // later: open memory detail if exists
                         },
                         onAddMemoryClick = { date, onMemoryAdded ->
-                            innerNavController.navigate(Screen.Capture.route(date))
+                            rootNavController.navigate(Screen.Capture.route(date))
                         }
                 )
             }

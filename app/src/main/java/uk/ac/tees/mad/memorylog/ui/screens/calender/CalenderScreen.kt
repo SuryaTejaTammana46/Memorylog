@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.ac.tees.mad.memorylog.ui.screens.calender.components.CalendarDayItem
+import uk.ac.tees.mad.memorylog.ui.screens.calender.components.ProfileHeader
 import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
 
 
@@ -36,28 +38,15 @@ fun CalendarScreen(
 ) {
     val memoryDays by viewModel.memoryDays.collectAsState()
 
+    LaunchedEffect(Unit) {
+        viewModel.loadCalendarData()
+    }
     Column(
         modifier = Modifier
             .fillMaxSize()
             .padding(16.dp)
     ) {
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Button(
-                onClick = {
-                    onAddMemoryClick(
-                        java.time.LocalDate.now().toString(),
-                        { viewModel.refresh() }
-                    )
-                }
-            ) {
-                Text("Add Memory")
-            }
-
-        }
+        ProfileHeader("Calendar")
 
         Spacer(modifier = Modifier.height(16.dp))
 
@@ -72,6 +61,24 @@ fun CalendarScreen(
                     onDayClick(it.date.toString())
                 }
             }
+        }
+        Spacer(Modifier.weight(1f))
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.End,
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Button(
+                onClick = {
+                    onAddMemoryClick(
+                        java.time.LocalDate.now().toString(),
+                        { viewModel.refresh() }
+                    )
+                }
+            ) {
+                Text("Add Memory")
+            }
+
         }
     }
 }

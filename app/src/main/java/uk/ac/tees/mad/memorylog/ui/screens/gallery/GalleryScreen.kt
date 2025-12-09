@@ -31,6 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
+import uk.ac.tees.mad.memorylog.ui.screens.calender.components.ProfileHeader
 import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
 
 @Composable
@@ -45,6 +46,9 @@ fun GalleryScreen(
     LaunchedEffect(Unit) { viewModel.loadGallery() }
 
     Column(Modifier.fillMaxSize().padding(16.dp)) {
+
+        ProfileHeader("Gallery")
+        Spacer(modifier = Modifier.height(16.dp))
 
         Row(verticalAlignment = Alignment.CenterVertically) {
             OutlinedTextField(

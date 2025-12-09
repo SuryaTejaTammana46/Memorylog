@@ -25,6 +25,7 @@ open class MemoryViewModel @Inject constructor(
     private val _uiState = MutableStateFlow<UiState<Unit>>(UiState.Idle)
     val uiState = _uiState.asStateFlow()
 
+
     // New: Event to notify calendar
     private val _memorySavedEvent = MutableStateFlow(false)
     val memorySavedEvent: StateFlow<Boolean> = _memorySavedEvent
@@ -38,7 +39,7 @@ open class MemoryViewModel @Inject constructor(
 
             val existsResult = repository.memoryExistsForDate(today)
             if (existsResult.isSuccess && existsResult.getOrThrow()) {
-                _uiState.value = UiState.Idle
+                _uiState.value = UiState.Success(Unit)
                 onReplaceRequest() // Trigger dialog
             } else {
                 addMemory(memory)
@@ -53,10 +54,6 @@ open class MemoryViewModel @Inject constructor(
         }
     }
 
-    fun resetEvent() {
-        _memorySavedEvent.value = false
-    }
-
     private fun addMemory(memory: Memory) {
         viewModelScope.launch {
             Log.d("MemoryVM", "Adding memory: $memory")
@@ -68,6 +65,10 @@ open class MemoryViewModel @Inject constructor(
                 UiState.Failure(result.exceptionOrNull() ?: Exception("Unknown error"))
             }
         }
+    }
+
+    fun resetEvent() {
+        _memorySavedEvent.value = false
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
