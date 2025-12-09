@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.ui.screens.memory
+package uk.ac.tees.mad.memorylog.previews
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,15 +11,14 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
-import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
 
 @Composable
-fun PreviewMemoryScreen(
+fun PreviewMemoryScreenUi(
     photoPath: String,
     onRetake: () -> Unit,
     onConfirm: () -> Unit
@@ -49,15 +48,13 @@ fun PreviewMemoryScreen(
         }
     }
 }
-
 @Preview(showBackground = true)
 @Composable
-fun PreviewPreviewMemoryScreen() {
-    MemoryLogTheme {
-        PreviewMemoryScreen(
-            photoPath = "",
-            onRetake = {},
-            onConfirm = {}
-        )
-    }
+private fun PreviewMemoryScreenUi() {
+    PreviewMemoryScreenUi(
+        photoPath = "",
+        onRetake = {},
+        onConfirm = {}
+    )
 }
+

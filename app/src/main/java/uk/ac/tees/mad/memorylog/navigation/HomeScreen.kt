@@ -55,20 +55,20 @@ fun HomeScreen(rootNavController: NavHostController) {
                         onAddMemoryClick = { date, onMemoryAdded ->
                             rootNavController.navigate(Screen.Capture.route(date))
                         }
-                )
+                    )
+                }
+                composable(Screen.Gallery.route) {
+                    GalleryScreen(
+                        onMemoryClick = { memoryId ->
+                            innerNavController.navigate(Screen.MemoryDetail.route(memoryId))
+                        }
+                    )
+                }
+                composable(Screen.Settings.route) {
+                    SettingsScreen()
+                }
             }
-            composable(Screen.Gallery.route) {
-                GalleryScreen(
-                    onMemoryClick = { memoryId ->
-                        innerNavController.navigate(Screen.MemoryDetail.route(memoryId))
-                    }
-                )
-            }
-            composable(Screen.Settings.route) {
-                SettingsScreen()
-            }
-        }
 //            }
+        }
     }
-}
 }

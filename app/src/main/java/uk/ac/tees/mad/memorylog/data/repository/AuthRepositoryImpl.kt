@@ -2,6 +2,7 @@ package uk.ac.tees.mad.memorylog.data.repository
 
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import uk.ac.tees.mad.memorylog.domain.model.User
 import uk.ac.tees.mad.memorylog.domain.repository.AuthRepository
@@ -25,17 +26,32 @@ class AuthRepositoryImpl @Inject constructor(
         Result.failure(e)
     }
 
-    override suspend fun signUp(email: String, password: String): Result<User> = try {
-        val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-        val user = result.user
-        if (user != null) {
-            Result.success(User(email = user.email ?: ""))
-        } else {
-            Result.failure(Exception("Sign up failed"))
+    override suspend fun signUp(email: String, password: String): Result<User> {
+        return try {
+            // 1. Create Firebase Auth user
+            val firestore= FirebaseFirestore.getInstance()
+            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val firebaseUser = result.user ?: return Result.failure(Exception("Sign up failed"))
+
+            // 2. Build Firestore User object
+            val newUser = User(
+                email = firebaseUser.email ?: ""
+            )
+
+            // 3. Save user to Firestore
+            firestore.collection("users")
+                .document(newUser.email)
+                .set(newUser)
+                .await()
+
+            // 4. Return success
+            Result.success(newUser)
+
+        } catch (e: Exception) {
+            Result.failure(e)
         }
-    } catch (e: Exception) {
-        Result.failure(e)
     }
+
 
     override suspend fun logout() {
         firebaseAuth.signOut()

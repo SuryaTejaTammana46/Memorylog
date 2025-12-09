@@ -37,16 +37,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.ui.screens.uistate.UiState
-import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
-import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
+import uk.ac.tees.mad.memorylog.ui.viewmodel.CalendarViewModel
+import uk.ac.tees.mad.memorylog.ui.viewmodel.MemoryViewModel
 import java.time.LocalDate
+import androidx.compose.ui.tooling.preview.Preview
+import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AddMemoryScreen(
     date: String,
     viewModel: MemoryViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel=hiltViewModel(),
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
     onMemoryAdded: () -> Unit,
     photoPath: String,
     onNavigateBack: () -> Unit
@@ -57,9 +59,14 @@ fun AddMemoryScreen(
 
     val uiState by viewModel.uiState.collectAsState()
 
+    // Triggered once when uiState changes
     LaunchedEffect(uiState) {
-
-        viewModel.resetEvent()
+        if (uiState is UiState.Success) {
+            // Memory successfully saved → refresh calendar and navigate back
+            calendarViewModel.refresh()
+            onMemoryAdded()
+            viewModel.resetEvent()
+        }
     }
 
     if (showReplaceDialog) {
@@ -101,13 +108,12 @@ fun AddMemoryScreen(
     ) {
         if (photoPath.isNotEmpty()) {
             Box(modifier = Modifier.fillMaxWidth()) {
-
                 AsyncImage(
                     model = photoPath,
                     contentDescription = null,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .aspectRatio(4f / 3f) // matches capture screen
+                        .aspectRatio(4f / 3f)
                         .clip(MaterialTheme.shapes.medium),
                     contentScale = ContentScale.Crop
                 )
@@ -152,24 +158,29 @@ fun AddMemoryScreen(
                     ),
                     onReplaceRequest = { showReplaceDialog = true }
                 )
-                when(uiState){
-                    is UiState.Failure -> {}
-                    UiState.Idle -> {
-
-                    }
-                    UiState.Loading -> {
-
-                    }
-                    is UiState.Success<*> -> {
-                        calendarViewModel.loadCalendarData()
-                        onMemoryAdded()
-                    }
-                }
             },
             enabled = uiState !is UiState.Loading,
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(if (uiState is UiState.Loading) "Saving..." else "Save Memory")
         }
+
+        Spacer(modifier = Modifier.height(12.dp))
+        Button(onClick = onNavigateBack, modifier = Modifier.fillMaxWidth()) {
+            Text("Cancel")
+        }
+    }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PreviewAddMemoryScreen() {
+    MemoryLogTheme {
+        AddMemoryScreen(
+            date = "2025-01-01",
+            photoPath = "",
+            onMemoryAdded = {},
+            onNavigateBack = {}
+        )
     }
 }

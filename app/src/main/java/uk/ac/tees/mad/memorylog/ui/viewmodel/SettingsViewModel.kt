@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.viewmodel
+package uk.ac.tees.mad.memorylog.ui.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 import androidx.datastore.preferences.core.Preferences
 import uk.ac.tees.mad.memorylog.domain.model.UserProfile
 import uk.ac.tees.mad.memorylog.domain.repository.UserRepository
+import uk.ac.tees.mad.memorylog.ui.screens.uistate.UiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -20,12 +21,21 @@ class SettingsViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    var userProfile by mutableStateOf<UserProfile?>(null)
-        private set
+    private var _userProfileState= MutableStateFlow< UiState<UserProfile?>>(UiState.Idle)
+    var userProfile: StateFlow<UiState<UserProfile?>> =_userProfileState
 
     init {
         viewModelScope.launch {
-            userProfile = userRepository.getUserProfile()
+            viewModelScope.launch {
+                _userProfileState.value= UiState.Loading
+                try {
+                    var response = userRepository.getUserProfile()
+                    _userProfileState.value= UiState.Success(response)
+                }catch (e:Exception){
+                    _userProfileState.value= UiState.Failure(e)
+                }
+            }
+
         }
     }
 
@@ -43,9 +53,9 @@ class SettingsViewModel @Inject constructor(
 
     fun updateProfile(name: String, avatarUrl: String) = viewModelScope.launch {
         userProfile?.let {
-            val updated = it.copy(name = name, avatarUrl = avatarUrl)
-            userRepository.updateUserProfile(updated)
-            userProfile = updated
+//            val updated = it.copy(name = name, avatarUrl = avatarUrl)
+//            userRepository.updateUserProfile(updated)
+//            userProfile = updated
         }
     }
 

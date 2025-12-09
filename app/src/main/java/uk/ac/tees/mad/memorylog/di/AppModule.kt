@@ -29,6 +29,10 @@ private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(na
 @InstallIn(SingletonComponent::class)
 object AppModule {
 
+    private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(
+        name = "settings_prefs"
+    )
+
     @Provides
     @Singleton
     fun provideFirebaseAuth(): FirebaseAuth = FirebaseAuth.getInstance()
@@ -52,11 +56,11 @@ object AppModule {
     fun provideMemoryRepository(firestore: FirebaseFirestore, firebaseAuth: FirebaseAuth, dao: MemoryDao): MemoryRepository =
         MemoryRepositoryImpl(firestore, firebaseAuth, dao)
 
-    @Provides
-    @Singleton
-    fun providePreferencesDataStore(
-        @ApplicationContext context: Context
-    ): DataStore<Preferences> = context.dataStore
+//    @Provides
+//    @Singleton
+//    fun providePreferencesDataStore(
+//        @ApplicationContext context: Context
+//    ): DataStore<Preferences> = context.dataStore
 
     @Provides
     @Singleton
@@ -66,15 +70,30 @@ object AppModule {
         dataStore: DataStore<Preferences>
     ): UserRepository = UserRepositoryImpl(firestore, firebaseAuth, dataStore)
 
+//    @Provides
+//    @Singleton
+//    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+//        return AppDatabase.getDatabase(context)
+//    }
+
     @Provides
     @Singleton
-    fun provideDatabase(@ApplicationContext context: Context): AppDatabase {
+    fun provideMemoryDao(db: AppDatabase): MemoryDao = db.memoryDao()
+
+    @Provides
+    @Singleton
+    fun provideDatabase(
+        @ApplicationContext context: Context
+    ): AppDatabase {
         return AppDatabase.getDatabase(context)
     }
 
     @Provides
     @Singleton
-    fun provideMemoryDao(db: AppDatabase): MemoryDao = db.memoryDao()
+    fun providePreferencesDataStore(
+        @ApplicationContext context: Context
+    ): DataStore<Preferences> = context.dataStore
+
 
 
 }

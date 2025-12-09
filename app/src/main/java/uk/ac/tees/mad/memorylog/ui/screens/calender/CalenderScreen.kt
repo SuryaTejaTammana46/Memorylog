@@ -26,7 +26,9 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.ac.tees.mad.memorylog.ui.screens.calender.components.CalendarDayItem
 import uk.ac.tees.mad.memorylog.ui.screens.calender.components.ProfileHeader
-import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
+import uk.ac.tees.mad.memorylog.ui.viewmodel.CalendarViewModel
+import androidx.compose.ui.tooling.preview.Preview
+import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
 
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -80,5 +82,16 @@ fun CalendarScreen(
             }
 
         }
+    }
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PreviewCalendarScreen() {
+    MemoryLogTheme {
+        CalendarScreen(
+            onAddMemoryClick = { _, _ -> }
+        )
     }
 }
