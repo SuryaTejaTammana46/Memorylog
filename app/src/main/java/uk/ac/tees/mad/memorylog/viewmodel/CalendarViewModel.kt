@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.ui.viewmodel
+package uk.ac.tees.mad.memorylog.viewmodel
 
 import android.os.Build
 import androidx.annotation.RequiresApi

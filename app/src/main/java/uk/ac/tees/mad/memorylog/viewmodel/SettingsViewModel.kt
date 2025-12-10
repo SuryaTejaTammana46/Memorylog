@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.ui.viewmodel
+package uk.ac.tees.mad.memorylog.viewmodel
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

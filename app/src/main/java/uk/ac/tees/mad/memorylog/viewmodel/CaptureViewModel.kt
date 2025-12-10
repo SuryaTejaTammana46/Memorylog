@@ -1,4 +1,4 @@
-package uk.ac.tees.mad.memorylog.ui.viewmodel
+package uk.ac.tees.mad.memorylog.viewmodel
 
 import androidx.lifecycle.ViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel

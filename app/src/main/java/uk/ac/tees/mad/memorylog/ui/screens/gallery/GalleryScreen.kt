@@ -32,9 +32,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.ui.screens.calender.components.ProfileHeader
-import uk.ac.tees.mad.memorylog.ui.viewmodel.MemoryViewModel
-import androidx.compose.ui.tooling.preview.Preview
-import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
+import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
 
 @Composable
 fun GalleryScreen(
@@ -96,77 +94,6 @@ fun GalleryMemoryCard(memory: Memory, onClick: () -> Unit) {
             Text(memory.title, style = MaterialTheme.typography.titleMedium)
             Text(memory.date, style = MaterialTheme.typography.bodyMedium)
             Text(memory.description, maxLines = 1, color = Color.Gray)
-        }
-    }
-}
-
-@Preview(showBackground = true, name = "MemoryLog – Gallery Screen")
-@Composable
-fun GalleryScreenPreview() {
-    val sampleMemories = listOf(
-        Memory(
-            id = "1",
-            title = "First Day at University",
-            date = "18 Sep 2023",
-            description = "Nervous but excited — new chapter begins!",
-            imagePath = "https://images.unsplash.com/photo-1523050858588-9cb708a54e9f?w=800"
-        ),
-        Memory(
-            id = "2",
-            title = "Summer Beach Trip",
-            date = "15 Jul 2024",
-            description = "Best day ever with friends at Saltburn!",
-            imagePath = "https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=800"
-        ),
-        Memory(
-            id = "3",
-            title = "Graduation Day",
-            date = "10 Jul 2024",
-            description = "Finally made it! So proud of this moment.",
-            imagePath = "https://images.unsplash.com/photo-1523580494863-6f3031224c94?w=800"
-        ),
-        Memory(
-            id = "4",
-            title = "Winter Wonderland",
-            date = "25 Dec 2023",
-            description = "Christmas morning with family — pure magic.",
-            imagePath = "https://images.unsplash.com/photo-1543589077-57900d2634da?w=800"
-        )
-    )
-
-    MemoryLogTheme {
-        Column(modifier = Modifier.fillMaxSize().padding(16.dp)) {
-            // Header
-            Text(
-                text = "Gallery",
-                style = MaterialTheme.typography.headlineMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-                modifier = Modifier.padding(bottom = 16.dp)
-            )
-
-            // Search + Sort
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                OutlinedTextField(
-                    value = "",
-                    onValueChange = {},
-                    label = { Text("Search memories...") },
-                    modifier = Modifier.weight(1f),
-                    shape = RoundedCornerShape(12.dp)
-                )
-                Spacer(Modifier.width(12.dp))
-                Button(onClick = {}) {
-                    Text("Newest")
-                }
-            }
-
-            Spacer(Modifier.height(16.dp))
-
-            // Memory List
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                items(sampleMemories) { memory ->
-                    GalleryMemoryCard(memory = memory, onClick = {})
-                }
-            }
         }
     }
 }

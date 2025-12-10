@@ -37,11 +37,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.ui.screens.uistate.UiState
-import uk.ac.tees.mad.memorylog.ui.viewmodel.CalendarViewModel
-import uk.ac.tees.mad.memorylog.ui.viewmodel.MemoryViewModel
+import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
+import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
 import java.time.LocalDate
-import androidx.compose.ui.tooling.preview.Preview
-import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -169,18 +167,5 @@ fun AddMemoryScreen(
         Button(onClick = onNavigateBack, modifier = Modifier.fillMaxWidth()) {
             Text("Cancel")
         }
-    }
-}
-@RequiresApi(Build.VERSION_CODES.O)
-@Preview(showBackground = true)
-@Composable
-fun PreviewAddMemoryScreen() {
-    MemoryLogTheme {
-        AddMemoryScreen(
-            date = "2025-01-01",
-            photoPath = "",
-            onMemoryAdded = {},
-            onNavigateBack = {}
-        )
     }
 }

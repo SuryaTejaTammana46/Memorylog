@@ -31,9 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import uk.ac.tees.mad.memorylog.ui.screens.auth.components.AppTextField
-import uk.ac.tees.mad.memorylog.ui.viewmodel.AuthViewModel
-import androidx.compose.ui.tooling.preview.Preview
-import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
+import uk.ac.tees.mad.memorylog.viewmodel.AuthViewModel
 
 @Composable
 fun SignupScreen(
@@ -138,14 +136,3 @@ fun SignupScreen(
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun PreviewSignupScreen() {
-    MemoryLogTheme {
-        SignupScreen(
-            onSignupSuccess = {},
-            onNavigateToLogin = {}
-        )
-    }
-}
-

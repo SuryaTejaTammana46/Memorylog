@@ -16,4 +16,3 @@ object FileUtils {
         return File(storageDir, "IMG_${timestamp}.jpg")
     }
 }
-

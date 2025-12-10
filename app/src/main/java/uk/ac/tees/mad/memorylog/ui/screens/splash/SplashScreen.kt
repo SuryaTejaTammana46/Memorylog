@@ -33,7 +33,7 @@ import coil.compose.AsyncImage
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 import uk.ac.tees.mad.memorylog.R
-import uk.ac.tees.mad.memorylog.ui.viewmodel.SplashViewModel
+import uk.ac.tees.mad.memorylog.viewmodel.SplashViewModel
 
 @Composable
 fun SplashScreen(
