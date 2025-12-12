@@ -116,16 +116,20 @@ fun AppNavGraph(navController: NavHostController) {
                 date = date,
                 photoPath = photoPath,
                 onMemoryAdded = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(Screen.Home.route) { inclusive = true }
-                    }
+                    navController.popBackStack(Screen.Home.route, inclusive = false)
+
                 },
-                onNavigateBack = { navController.navigate(Screen.Calendar.route) }
-            )
+                onNavigateBack = {
+                    navController.popBackStack()
+                }            )
         }
 
-        composable(Screen.Capture.route) { backStackEntry ->
-            val date = backStackEntry.arguments?.getString("date") ?: LocalDate.now().toString()
+        composable(
+            route = "capture/{date}",
+            arguments = listOf(navArgument("date") { type = NavType.StringType })
+        ) { entry ->
+            val date = entry.arguments?.getString("date") ?: LocalDate.now().toString()
+
             CaptureScreen(
                 onPhotoSaved = { path ->
                     navController.navigate(Screen.AddMemory.route(date, path))
@@ -141,8 +145,10 @@ fun AppNavGraph(navController: NavHostController) {
             PreviewMemoryScreen(
                 photoPath = path,
                 onRetake = { navController.popBackStack() },
-                onConfirm = { navController.navigate("add_memory?date=${LocalDate.now()}&photoPath=$path") }
-            )
+                onConfirm = {
+                    val today = LocalDate.now().toString()
+                    navController.navigate(Screen.AddMemory.route(today, path))
+                }            )
         }
 //        composable(Screen.Gallery.route) {
 //            GalleryScreen(

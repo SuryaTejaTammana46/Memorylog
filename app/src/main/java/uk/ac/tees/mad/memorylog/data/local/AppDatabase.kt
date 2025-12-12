@@ -11,7 +11,7 @@ import uk.ac.tees.mad.memorylog.data.local.entity.MemoryEntity
 
 @Database(
     entities = [MemoryEntity::class],
-    version = 2,
+    version = 4,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
@@ -28,23 +28,16 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "memorylog_db"
                 )
-                    // Use destructive migration for dev/testing
                     .fallbackToDestructiveMigration()
-
-                    // Uncomment below and add migrations for production-safe upgrades
-                    // .addMigrations(MIGRATION_1_2, MIGRATION_2_3, ...)
-
                     .build()
                 INSTANCE = instance
                 instance
             }
         }
 
-        // Example migration: 1 -> 2
+
         val MIGRATION_1_2 = object : Migration(1, 2) {
             override fun migrate(database: SupportSQLiteDatabase) {
-                // Example: add a new column (update to match your schema changes)
-                // database.execSQL("ALTER TABLE MemoryEntity ADD COLUMN newColumn TEXT DEFAULT '' NOT NULL")
             }
         }
     }

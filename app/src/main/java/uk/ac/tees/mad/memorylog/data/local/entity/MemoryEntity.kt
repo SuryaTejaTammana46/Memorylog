@@ -6,29 +6,37 @@ import uk.ac.tees.mad.memorylog.domain.model.Memory
 
 @Entity(tableName = "memories")
 data class MemoryEntity(
-    @PrimaryKey val date: String, // yyyy-MM-dd (unique per day)
-    val imagePath: String, // local URI (CameraX will insert here later)
+    @PrimaryKey val id: String,
     val title: String,
     val description: String,
+    val date: String,
+    val imagePath: String,
+    val imageUrl: String,
     val timestamp: Long,
-    val isSynced: Boolean = false
-
+    val isSynced: Boolean,
+    val userId: String
 )
 
 fun MemoryEntity.toDomain() = Memory(
-    id = date,
+    id = id,
     title = title,
     description = description,
     date = date,
     imagePath = imagePath,
-    isSynced = isSynced
+    imageUrl = imageUrl,
+    isSynced = isSynced,
+    userId = userId
+
 )
 
 fun Memory.toEntity() = MemoryEntity(
-    date = date,
+    id = "${userId}_${date}",
     title = title,
     description = description,
+    date = date,
     imagePath = imagePath,
+    imageUrl = imageUrl,
     timestamp = System.currentTimeMillis(),
-    isSynced = isSynced
+    isSynced = isSynced,
+    userId = userId
 )

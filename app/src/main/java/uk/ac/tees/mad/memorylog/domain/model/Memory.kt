@@ -7,15 +7,16 @@ data class Memory(
     val date: String = "", // ISO string for now
     val imagePath: String = "", // Local storage path (CameraX)
     val imageUrl: String = "" , // CLOUD URL (Firebase)
-    val isSynced: Boolean = false
+    val isSynced: Boolean = false,
+    val userId: String,
 )
 
-fun Memory.toMap(toString: String): Map<String, Any?> = mapOf(
+fun Memory.toMap(imageUrlOverride: String? = null): Map<String, Any?> = mapOf(
     "id" to id,
     "title" to title,
     "description" to description,
     "date" to date,
     "imagePath" to imagePath,
-    "imageUrl" to imageUrl,
+    "imageUrl" to (imageUrlOverride ?: imageUrl),
     "isSynced" to isSynced
 )

@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "674448041575",
-    "project_id": "memorylog-292d6",
-    "storage_bucket": "memorylog-292d6.firebasestorage.app"
+    "project_number": "1073940716214",
+    "project_id": "memorylog-7c335",
+    "storage_bucket": "memorylog-7c335.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:674448041575:android:febbd4cbe5a299a5d356c2",
+        "mobilesdk_app_id": "1:1073940716214:android:14948c40bcfbcf574d2417",
         "android_client_info": {
           "package_name": "uk.ac.tees.mad.memorylog"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyAcY3zO0ZHI8F9h9CUA83KSQOFrEhKcTPs"
+          "current_key": "AIzaSyBcDaqCHw_q_X1TsPZw8UA0MJ5LLRVd7iE"
         }
       ],
       "services": {

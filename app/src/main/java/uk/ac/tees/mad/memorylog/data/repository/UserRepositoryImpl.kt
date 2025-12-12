@@ -9,8 +9,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.tasks.await
 import uk.ac.tees.mad.memorylog.domain.model.UserProfile
 import uk.ac.tees.mad.memorylog.domain.repository.UserRepository
+import javax.inject.Inject
 
-class UserRepositoryImpl(
+class UserRepositoryImpl @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth,
     private val dataStore: DataStore<Preferences>
@@ -22,8 +23,12 @@ class UserRepositoryImpl(
 
     override suspend fun getUserProfile(): UserProfile? {
         val user = auth.currentUser ?: return null
-        val snapshot = firestore.collection("users").document(user.uid).get().await()
-        return snapshot.toObject(UserProfile::class.java)
+        val doc = firestore.collection("users")
+            .document(user.uid)
+            .get()
+            .await()
+
+        return doc.toObject(UserProfile::class.java)
     }
 
     override suspend fun updateUserProfile(profile: UserProfile) {
@@ -33,6 +38,12 @@ class UserRepositoryImpl(
     override suspend fun setDarkTheme(enabled: Boolean) {
         dataStore.edit { it[DARK_THEME_KEY] = enabled }
     }
+
+    override val darkThemeFlow = dataStore.data
+        .map { prefs ->
+            prefs[DARK_THEME_KEY] ?: false
+        }
+
 
     override suspend fun setAutoBackup(enabled: Boolean) {
         dataStore.edit { it[AUTO_BACKUP_KEY] = enabled }

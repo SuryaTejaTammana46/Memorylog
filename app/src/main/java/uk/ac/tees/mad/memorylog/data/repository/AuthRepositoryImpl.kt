@@ -5,7 +5,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import uk.ac.tees.mad.memorylog.domain.model.User
+import uk.ac.tees.mad.memorylog.domain.model.UserProfile
 import uk.ac.tees.mad.memorylog.domain.repository.AuthRepository
+import uk.ac.tees.mad.memorylog.utils.initialOf
 import javax.inject.Inject
 
 class AuthRepositoryImpl @Inject constructor(
@@ -28,38 +30,45 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun signUp(email: String, password: String): Result<User> {
         return try {
-            // 1. Create Firebase Auth user
-            val firestore= FirebaseFirestore.getInstance()
-            val result = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
-            val firebaseUser = result.user ?: return Result.failure(Exception("Sign up failed"))
+            val authResult = firebaseAuth.createUserWithEmailAndPassword(email, password).await()
+            val firebaseUser = authResult.user ?: return Result.failure(Exception("Sign-up failed"))
 
-            // 2. Build Firestore User object
-            val newUser = User(
-                email = firebaseUser.email ?: ""
+            val uid = firebaseUser.uid
+            val displayName = email.substringBefore("@")
+            val avatar = initialOf(displayName)
+
+
+            // Create default profile
+            val profile = UserProfile(
+                uid = uid,
+                name = displayName,
+                avatarUrl = avatar,
+                email = firebaseUser.email ?: "",
+                darkTheme = false,
+                autoBackup = true,
+                biometricEnabled = false
             )
 
-            // 3. Save user to Firestore
-            firestore.collection("users")
-                .document(newUser.email)
-                .set(newUser)
+            FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(uid)
+                .set(profile)
                 .await()
 
-            // 4. Return success
-            Result.success(newUser)
+            Result.success(User(email = email))
 
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
 
-
     override suspend fun logout() {
         firebaseAuth.signOut()
     }
 
     override suspend fun currentUser(): User? {
-        val user = firebaseAuth.currentUser
-        return user?.let { User(email = it.email ?: "") }
+        val user = firebaseAuth.currentUser ?: return null
+        return User(email = user.email ?: "")
     }
 
     override fun checkIfUserLoggedIn(): Boolean {

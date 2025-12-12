@@ -11,11 +11,8 @@ import uk.ac.tees.mad.memorylog.data.local.entity.MemoryEntity
 @Dao
 interface MemoryDao {
 
-    @Query("SELECT * FROM memories ORDER BY date DESC")
-    fun getAllMemories(): Flow<List<MemoryEntity>>
-
-    @Query("SELECT * FROM memories WHERE date = :date LIMIT 1")
-    suspend fun getMemory(date: String): MemoryEntity?
+    @Query("SELECT * FROM memories WHERE userId = :uid ORDER BY date DESC ")
+    fun getAllMemories(uid: String): Flow<List<MemoryEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertMemory(memory: MemoryEntity)
@@ -23,20 +20,22 @@ interface MemoryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(memories: List<MemoryEntity>)
 
-    @Delete
-    suspend fun deleteMemory(memory: MemoryEntity)
+    @Query("SELECT * FROM memories WHERE date = :date AND userId = :uid LIMIT 1")
+    suspend fun getMemoryByDate(date: String, uid: String): MemoryEntity?
 
-    @Query("SELECT * FROM memories WHERE date = :date LIMIT 1")
-    suspend fun getMemoryByDate(date: String): MemoryEntity?
+    @Query("DELETE FROM memories WHERE date = :date AND userId = :uid")
+    suspend fun deleteByDate(date: String, uid: String)
 
-    @Query("DELETE FROM memories WHERE date = :date")
-    suspend fun deleteByDate(date: String)
+    @Query("DELETE FROM memories WHERE id = :id AND userId = :uid")
+    suspend fun deleteById(id: String, uid: String)
 
-    @Query("SELECT * FROM memories WHERE isSynced = 0")
-    suspend fun getUnsyncedMemories(): List<MemoryEntity>
+    @Query("SELECT * FROM memories WHERE isSynced = 0 AND userId = :uid")
+    suspend fun getUnsyncedMemories(uid: String): List<MemoryEntity>
 
-    @Query("UPDATE memories SET isSynced = 1 WHERE date = :date")
-    suspend fun markAsSynced(date: String)
+    @Query("UPDATE memories SET isSynced = 1 WHERE date = :date AND userId = :uid")
+    suspend fun markAsSynced(date: String, uid: String)
 
+    @Query("SELECT * FROM memories WHERE id = :id AND userId = :uid LIMIT 1")
+    suspend fun getMemoryById(id: String, uid: String): MemoryEntity?
 
 }

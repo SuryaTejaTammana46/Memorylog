@@ -50,7 +50,7 @@ fun HomeScreen(rootNavController: NavHostController) {
                 composable(Screen.Calendar.route) {
                     CalendarScreen(
                         onDayClick = { selectedDate ->
-                            // later: open memory detail if exists
+                            rootNavController.navigate(Screen.Capture.route(selectedDate))
                         },
                         onAddMemoryClick = { date, onMemoryAdded ->
                             rootNavController.navigate(Screen.Capture.route(date))
@@ -60,12 +60,16 @@ fun HomeScreen(rootNavController: NavHostController) {
                 composable(Screen.Gallery.route) {
                     GalleryScreen(
                         onMemoryClick = { memoryId ->
-                            innerNavController.navigate(Screen.MemoryDetail.route(memoryId))
+                            rootNavController.navigate(Screen.MemoryDetail.route(memoryId))
                         }
                     )
                 }
                 composable(Screen.Settings.route) {
-                    SettingsScreen()
+                    SettingsScreen {
+                        rootNavController.navigate(Screen.Login.route) {
+                            popUpTo(Screen.Home.route) { inclusive = true }
+                        }
+                    }
                 }
             }
 //            }

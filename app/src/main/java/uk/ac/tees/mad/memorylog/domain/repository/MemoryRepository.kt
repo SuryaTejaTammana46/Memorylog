@@ -13,4 +13,5 @@ interface MemoryRepository {
     suspend fun getMemoryForDate(date: String): Memory?
     suspend fun getUnsyncedMemories(): List<Memory>
     suspend fun markAsSynced(date: String)
+    suspend fun getMemoryById(id: String): Memory?
 }

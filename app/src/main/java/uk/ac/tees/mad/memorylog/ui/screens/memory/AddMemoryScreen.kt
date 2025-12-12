@@ -37,9 +37,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import uk.ac.tees.mad.memorylog.domain.model.Memory
 import uk.ac.tees.mad.memorylog.ui.screens.uistate.UiState
-import uk.ac.tees.mad.memorylog.viewmodel.CalendarViewModel
-import uk.ac.tees.mad.memorylog.viewmodel.MemoryViewModel
+import uk.ac.tees.mad.memorylog.ui.viewmodel.CalendarViewModel
+import uk.ac.tees.mad.memorylog.ui.viewmodel.MemoryViewModel
 import java.time.LocalDate
+import androidx.compose.ui.tooling.preview.Preview
+import com.google.firebase.auth.FirebaseAuth
+import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -54,13 +57,13 @@ fun AddMemoryScreen(
     var title by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var showReplaceDialog by remember { mutableStateOf(false) }
+    val uid = FirebaseAuth.getInstance().currentUser?.uid ?: ""
 
     val uiState by viewModel.uiState.collectAsState()
 
     // Triggered once when uiState changes
     LaunchedEffect(uiState) {
         if (uiState is UiState.Success) {
-            // Memory successfully saved → refresh calendar and navigate back
             calendarViewModel.refresh()
             onMemoryAdded()
             viewModel.resetEvent()
@@ -79,10 +82,14 @@ fun AddMemoryScreen(
                     showReplaceDialog = false
                     viewModel.replaceMemory(
                         Memory(
+                            id = "${uid}_${date}",
                             title = title,
                             description = description,
-                            date = LocalDate.now().toString(),
-                            imagePath = photoPath
+                            date = date,
+                            imagePath = photoPath,
+                            imageUrl = "",
+                            isSynced = false,
+                            userId = uid
                         )
                     )
                 }) {
@@ -149,10 +156,14 @@ fun AddMemoryScreen(
             onClick = {
                 viewModel.addMemoryWithCheck(
                     Memory(
+                        id = "${uid}_${date}",
                         title = title,
                         description = description,
-                        date = LocalDate.now().toString(),
-                        imagePath = photoPath
+                        date = date,
+                        imagePath = photoPath,
+                        imageUrl = "",
+                        isSynced = false,
+                        userId = uid
                     ),
                     onReplaceRequest = { showReplaceDialog = true }
                 )
@@ -167,5 +178,18 @@ fun AddMemoryScreen(
         Button(onClick = onNavigateBack, modifier = Modifier.fillMaxWidth()) {
             Text("Cancel")
         }
+    }
+}
+@RequiresApi(Build.VERSION_CODES.O)
+@Preview(showBackground = true)
+@Composable
+fun PreviewAddMemoryScreen() {
+    MemoryLogTheme {
+        AddMemoryScreen(
+            date = "2025-01-01",
+            photoPath = "",
+            onMemoryAdded = {},
+            onNavigateBack = {}
+        )
     }
 }

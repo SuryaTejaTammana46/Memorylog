@@ -11,7 +11,7 @@ import androidx.camera.core.AspectRatio
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageCapture
 import androidx.camera.core.ImageCaptureException
-import androidx.camera.core.Preview
+//import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
@@ -37,14 +37,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import uk.ac.tees.mad.memorylog.ui.theme.MemoryLogTheme
+import uk.ac.tees.mad.memorylog.ui.viewmodel.CaptureViewModel
 import uk.ac.tees.mad.memorylog.utils.FileUtils
 import uk.ac.tees.mad.memorylog.utils.await
-import uk.ac.tees.mad.memorylog.viewmodel.CaptureViewModel
 
 @RequiresApi(Build.VERSION_CODES.P)
 @Composable
@@ -115,11 +117,12 @@ private fun CameraPreviewAndCaptureUI(
     var lensFacing by remember { mutableStateOf(CameraSelector.DEFAULT_BACK_CAMERA) }
     var flashMode by remember { mutableStateOf(ImageCapture.FLASH_MODE_OFF) }
 
-    val imageCapture = remember { ImageCapture.Builder()
-        .setTargetAspectRatio(AspectRatio.RATIO_4_3)
-        .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
-        .setFlashMode(flashMode)
-        .build()
+    val imageCapture = remember {
+        ImageCapture.Builder()
+            .setTargetAspectRatio(AspectRatio.RATIO_4_3)
+            .setCaptureMode(ImageCapture.CAPTURE_MODE_MINIMIZE_LATENCY)
+            .setFlashMode(flashMode)
+            .build()
     }
 
     // Check permission state
@@ -142,7 +145,7 @@ private fun CameraPreviewAndCaptureUI(
         if (previewView != null) {
             val cameraProvider = ProcessCameraProvider.Companion.await(context)
 
-            val preview = Preview.Builder().build().also {
+            val preview = androidx.camera.core.Preview.Builder().build().also {
                 it.setSurfaceProvider(previewView?.surfaceProvider)
             }
 
@@ -225,6 +228,16 @@ private fun CameraPreviewAndCaptureUI(
                         onPhotoSaved(path)
                     }
                 }
+        )
+    }
+}
+@RequiresApi(Build.VERSION_CODES.P)
+@Preview(showBackground = true)
+@Composable
+fun PreviewCaptureScreen() {
+    MemoryLogTheme {
+        CaptureScreen(
+            onPhotoSaved = {}
         )
     }
 }

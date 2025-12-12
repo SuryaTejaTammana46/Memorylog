@@ -16,3 +16,8 @@ object FileUtils {
         return File(storageDir, "IMG_${timestamp}.jpg")
     }
 }
+
+
+fun initialOf(name: String): String {
+    return name.trim().firstOrNull()?.uppercase()?.toString() ?: "?"
+}
